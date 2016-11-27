@@ -4,36 +4,81 @@ var app = angular.module('myApp', []);
 <!-- question only as it is for saving single question-->
 app.service('backup', function() {
   var question ;
+  var questionNo;
   console.log('in the backup');
 
 
 
-  var saveQuestion = function(newObj) {
+  var saveQuestion = function(newObj , index, questionNum) {
+    if(index == 1)
+    {
+      questionNo = questionNum;
+      console.log('saveEmptyQuestion');
+      question ={
+        title : "",
+        type : "",
+        choice: [""],
+        answer: ""
+      };
+    }
+    else
+    {
+      questionNo = questionNum;
+      console.log('saveRealQuestion');
       question =jQuery.extend(true,{},newObj);
-      console.log('see see the obj');
-      console.log(newObj);
-      console.log('see see the question');
-      console.log(question);
+    }
+
   };
 
   var getQuestion = function(){
-    console.log('getQuestion called');
-    console.log('question return');
-    console.log(question);
+  <!--console.log('question return'); -->
+  <!--console.log(question);-->
       return question;
+  };
+
+  var getQuestionNumber = function()
+  {
+    return questionNo;
+  };
+
+  var isQuestionEmpty = function(){
+    if(typeof question =='undefined'||question == null)
+    {
+      return true;
+    }
+    else
+    {
+      if(question.title===''||question.choice[0]===''||question.answer==='')
+      {
+        return true;
+      }
+      else
+      {
+        var temp = false
+        for(a=0;a<question.choice.length;++a)
+        {
+          if(question.choice[a]==='')
+          temp = true;
+        }
+        return temp;
+      }
+    }
+
   };
 
   return {
     saveQuestion: saveQuestion,
-    getQuestion: getQuestion
+    getQuestion: getQuestion,
+    isQuestionEmpty: isQuestionEmpty,
+    getQuestionNumber: getQuestionNumber
   };
 
 });
 
 
-app.controller('trial', function($scope, backup) {
+app.controller('testCtrl', function($scope, backup) {
     $scope.questionList = [];
-    $scope.tempQuestion ='';
+    <!--$scope.tempQuestion ='';-->
     var question = {
       title : "Can you feel my heart beat?",
       type : "MC",
@@ -58,11 +103,14 @@ app.controller('trial', function($scope, backup) {
 
     console.log($scope.questionList);
 
-    $scope.goBackup = function(questionNo)
+    $scope.goBackup = function(questionNo, index,questionNo)
     {
       console.log('goBackup called');
       console.log($scope.questionList[questionNo]);
-      backup.saveQuestion($scope.questionList[questionNo]);
+
+      backup.saveQuestion($scope.questionList[questionNo], index, questionNo);
+
+      <!--this can be delete late possibly -->
       $scope.tempQuestion = backup.getQuestion();
     };
 
@@ -80,10 +128,20 @@ app.controller('trial', function($scope, backup) {
       $scope.emptyTempquestion();
     };
 
-    $scope.saveEditedQuestion = function(questionNo)
+    $scope.saveEditedQuestion = function()
     {
+      console.log('saveEditedQuestion called');
+      console.log(backup.getQuestionNumber());
+      if(backup.getQuestionNumber() !== -1)
+      $scope.questionList[backup.getQuestionNumber()] = backup.getQuestion();
+      else
+      {
+          $scope.questionList.push(backup.getQuestion());
+      }
 
-      $scope.questionList[questionNo] = $scope.tempQuestion;
+
+      <!--left for backup old version-->
+      <!--$scope.questionList[questionNo] = $scope.tempQuestion;-->
     };
 
 
@@ -98,8 +156,8 @@ app.controller('trial', function($scope, backup) {
       console.log('try to empty tempQuestion');
       tempQuestion ={
         title : "",
-        type : "",
-        choice: ["","","",""],
+        type : "MC",
+        choice: ["A","B","C","D"],
         answer: ""
       };
 
@@ -122,7 +180,39 @@ app.controller('trial', function($scope, backup) {
 
     };
 
+    $scope.isInvalidQuestion = function()
+    {
+      return  backup.isQuestionEmpty();
 
+    }
+
+    $scope.addChoice = function()
+    {
+      backup.getQuestion().choice.push('');
+    };
+
+    $scope.deleteChoice = function()
+    {
+      console.log('deleteChoice called');
+      console.log(backup.getQuestion().choice.length);
+       backup.getQuestion().choice.splice(backup.getQuestion().choice.length-1,1);
+    };
+
+    $scope.cancelQuestion = function()
+    {
+      console.log('called invalid question');
+      console.log($scope.isInvalidQuestion());
+      if(!$scope.isInvalidQuestion())
+      {
+        console.log('true section');
+      // do nothing
+      }
+      else
+      {
+        console.log('false section');
+
+      }
+    };
 
 
 });
