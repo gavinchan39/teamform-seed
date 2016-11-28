@@ -2,6 +2,29 @@
 <html>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+ <!-- Theme style -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.8/css/AdminLTE.min.css">
+ <!-- AdminLTE Skins. Choose a skin from the css/skins
+      folder instead of downloading all of them to reduce the load. -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.8/css/skins/_all-skins.min.css">
+ <!-- iCheck -->
+ <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
+ <!-- Morris chart -->
+ <link rel="stylesheet" href="plugins/morris/morris.css">
+ <!-- jvectormap -->
+ <link rel="stylesheet" href="plugins/jvectormap/jquery-jvectormap-1.2.2.css">
+ <!-- Date Picker -->
+ <link rel="stylesheet" href="plugins/datepicker/datepicker3.css">
+ <!-- Daterange picker -->
+ <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
+ <!-- bootstrap wysihtml5 - text editor -->
+ <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
@@ -9,34 +32,38 @@
 <body>
 
 
-  <div class="container"  ng-app="myApp" ng-controller="takeTestCtrl">
+  <div class="container" id="testArea" ng-app="myApp" ng-controller="takeTestCtrl">
         <span>{{questionList}}</span>
         <span>{{answerList}}</span>
 
 
         <span id="countdown" class="timer"></span>
 
-
         <div>
-            <div ng-repeat="x in questionList" >
+          You have <span id="questionNumberlala">{{questionList.length}}</span> question(s) to answer.
+        </div>
+        <div ng-hide="finish">
+            <div ng-repeat="x in questionList" class="box box-primary">
               <form>
-                <pre>
-                <h3 >{{x.title}}</h3>
-                <h4>Answer selected: {{answerList[$index]}}</h4>
+                <div class="box-header with-border"><h4>{{x.title}}</h4></div>
 
-                <div class="form-group">
-                  <div  ng-repeat="y in x.choice" class="col-xs-10 col-md-10">
-                    <button ng-click="setAnswer($parent.$index,x.choice[$index])"  type="button" class="btn btn-default btn-block">{{arrayIndexToChar($index)}}: {{y}}<span class="badge" id="choice{{$index}}Badge"></span></button>
-                </div>
 
-                </div>
-              </pre>
+                    <div ng-disabled="finish" class="box-body" >
+                        <h4>Answer selected: {{answerList[$index]}}</h4>
+                        <div ng-repeat="y in x.choice">
+                        <input ng-disabled="finish" ng-click="setAnswer($parent.$index,arrayIndexToChar($index))" type="radio" name="question{{$parent.$index}}" id="question{{$parent.$index}}Choice{{$index}}" value="{{y}}"><label for="question{{$parent.$index}}Choice{{$index}}"><h4>{{arrayIndexToChar($index)}}: {{y}}</h4></label><br>
+                      </div>
+                        <!--<button ng-click="setAnswer($parent.$index,arrayIndexToChar($index))"  type="button" class="btn btn-default btn-block">{{arrayIndexToChar($index)}}: {{y}}<span class="badge" id="choice{{$index}}Badge"></span></button>-->
+                    </div>
+
               </form>
             </div>
             <h4 style="text-align:center;" >----------End-----------</h4>
+            <button ng-click="isPass();finished()"  type="button" class="btn btn-default"> Finish</button>
         </div>
 
-
+        <div ng-hide="hideGoodResult()" class="alert alert-success" role="alert"><h2 style="text-align:center;color: green;">Congratulations! You passed the test!</h2></div>
+        <div ng-hide="hideBadResult()" class="alert alert-warning" role="alert"><h2 style="text-align:center;color: orange;">You failed the test...Work harder ! </h2></div>
 
   </div>
 

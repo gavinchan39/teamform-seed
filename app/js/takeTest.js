@@ -4,6 +4,8 @@ var app = angular.module('myApp', []);
 app.controller('takeTestCtrl', function($scope) {
     $scope.questionList = [];
     $scope.answerList = [];
+    $scope.mark=-1;
+    $scope.finish = false;
     var question = {
       title : "Can you feel my heart beat?",
       type : "MC",
@@ -52,10 +54,69 @@ app.controller('takeTestCtrl', function($scope) {
       return temp;
     };
 
+    $scope.calculatingMark = function()
+    {
+      var counter = 0;
+      for(var x in $scope.questionList){
+        console.log($scope.questionList);
+        console.log(x);
+        console.log('answer');
+        console.log($scope.questionList[x]['answer']);
+        console.log('user answer');
+        console.log($scope.answerList[x]);
+        if($scope.questionList[x].answer == $scope.answerList[x])
+        counter++;
+      }
+
+
+      $scope.mark = (counter/$scope.questionList.length) * 100;
+      console.log('mark set');
+      console.log($scope.mark);
+    };
+
+    $scope.isPass = function()
+    {
+
+      $scope.calculatingMark();
+      if($scope.mark>= 50)
+      {
+        $scope.finished();
+        console.log('pass la');
+        console.log('see see finish');
+        console.log($scope.finish);
+        return true;
+      }
+      else
+      {
+        console.log('fail la');
+        return false;
+      }
+    };
+
+    $scope.finished = function()
+    {
+      $scope.finish = true;
+    };
+
+    $scope.hideGoodResult = function()
+    {
+      console.log('good result');
+      console.log(!($scope.finish && $scope.isPass()));
+      return !($scope.finish && $scope.isPass());
+    };
+
+    $scope.hideBadResult = function()
+    {
+      console.log('good result');
+      console.log(!($scope.finish && $scope.isPass()));
+      return !($scope.finish && !($scope.isPass()));
+    };
+
 
 });
 
-var seconds = 60;
+var seconds = 3*60;
+
 function secondPassed() {
     var minutes = Math.round((seconds - 30)/60);
     var remainingSeconds = seconds % 60;
@@ -66,6 +127,9 @@ function secondPassed() {
     if (seconds == 0) {
         clearInterval(countdownTimer);
         document.getElementById('countdown').innerHTML = "Buzz Buzz";
+        angular.element(document.getElementById('testArea')).scope().finished();
+        angular.element(document.getElementById('testArea')).scope().isPass();
+        angular.element(document.getElementById('testArea')).scope().$apply();
     } else {
         seconds--;
     }
