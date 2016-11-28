@@ -1,5 +1,5 @@
 
-var app = angular.module('myApp', []);
+var app = angular.module('test', ['login','search','firebase']);
 
 <!-- question only as it is for saving single question-->
 app.service('backup', function() {
@@ -17,7 +17,12 @@ app.service('backup', function() {
       question ={
         title : "",
         type : "",
-        choice: [""],
+        choice: [
+          {text:"A"},
+          {text:"B"},
+          {text:"C"},
+          {text:"D"},
+        ],
         answer: ""
       };
     }
@@ -76,25 +81,77 @@ app.service('backup', function() {
 });
 
 
-app.controller('testCtrl', function($scope, backup) {
+app.controller('testCtrl', ["$scope","$firebaseObject","$firebaseArray", "backup",function($scope, $firebaseObject, $firebaseArray, backup) {
     $scope.questionList = [];
+    $scope.id = "";
+    $scope.testName = "";
+    initalizeFirebase();
+    var id = "";
+    firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      // User is signed in.
+      id = firebase.auth().currentUser.uid;
+      $scope.id = id;
+    }
+
+    });
+
+    $scope.submitTest = function(){
+      console.log("gdfgfd");
+      var data = {
+        uid: $scope.id,
+        testName: $scope.testName,
+        questionList: $scope.questionList,
+      };
+
+      var newTestKey = firebase.database().ref().child('/').push().key;
+      console.log(newTestKey);
+      // var updates = {};
+      // updates['/tests/' + newTestKey] = data;
+      // updates['/user-posts/' + newTestKey] = data;
+      // firebase.database().ref().update(updates);
+
+      var ref = firebase.database().ref('/tests/' + newTestKey);
+      var obj = $firebaseObject(ref);
+      Object.assign(obj, data);
+      obj.$save();
+      console.log("gdfgfd");
+
+    }
+
+
     <!--$scope.tempQuestion ='';-->
     var question = {
       title : "Can you feel my heart beat?",
       type : "MC",
-      choice: ["A","B","C","D"],
+      choice: [
+        {text:"A"},
+        {text:"B"},
+        {text:"C"},
+        {text:"D"},
+      ],
       answer: "A"
     };
     var question2 = {
       title : "Can you feel my head beat?",
       type : "MC",
-      choice: ["A","B","C","D"],
+      choice: [
+        {text:"A"},
+        {text:"B"},
+        {text:"C"},
+        {text:"D"},
+      ],
       answer: "A"
     };
     var question3 = {
       title : "Can you feel my hand beat?",
       type : "MC",
-      choice: ["A","B","C","D"],
+      choice: [
+        {text:"A", image:"jfdoifjdsoifdsiohfidhfio"},
+        {text:"B"},
+        {text:"C"},
+        {text:"D"},
+      ],
       answer: "A"
     };
     $scope.questionList.push(question);
@@ -102,7 +159,12 @@ app.controller('testCtrl', function($scope, backup) {
     $scope.questionList.push(question3);
 
     console.log($scope.questionList);
+    $scope.arrayIndexToChar = function(index)
+    {
+      var temp = String.fromCharCode(index+65);;
 
+      return temp;
+    };
     $scope.goBackup = function(questionNo, index,questionNo)
     {
       console.log('goBackup called');
@@ -157,7 +219,12 @@ app.controller('testCtrl', function($scope, backup) {
       tempQuestion ={
         title : "",
         type : "MC",
-        choice: ["A","B","C","D"],
+        choice: [
+          {text:"A"},
+          {text:"B"},
+          {text:"C"},
+          {text:"D"},
+        ],
         answer: ""
       };
 
@@ -172,7 +239,12 @@ app.controller('testCtrl', function($scope, backup) {
       var emptyQuestion ={
         title : "",
         type : "",
-        choice: ["","","",""],
+        choice: [
+          {text:"A"},
+          {text:"B"},
+          {text:"C"},
+          {text:"D"},
+        ],
         answer: ""
       };
       $scope.questionList.push(emptyQuestion) ;
@@ -188,7 +260,7 @@ app.controller('testCtrl', function($scope, backup) {
 
     $scope.addChoice = function()
     {
-      backup.getQuestion().choice.push('');
+      backup.getQuestion().choice.push({text:""});
     };
 
     $scope.deleteChoice = function()
@@ -215,4 +287,65 @@ app.controller('testCtrl', function($scope, backup) {
     };
 
 
-});
+
+    $scope.imgs = [];
+
+
+    var _validFileExtensions = [".jpg", ".jpeg", ".bmp", ".gif", ".png"];
+    $scope.uploadFile = function() {
+
+    	var sFileName = $("#nameImg").val();
+    	if (sFileName.length > 0) {
+    		var blnValid = false;
+    		for (var j = 0; j < _validFileExtensions.length; j++) {
+    			var sCurExtension = _validFileExtensions[j];
+    			if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+    				blnValid = true;
+    				var filesSelected = document.getElementById("nameImg").files;
+    				if (filesSelected.length > 0) {
+    					var fileToLoad = filesSelected[0];
+
+    					var fileReader = new FileReader();
+
+    					fileReader.onload = function(fileLoadedEvent) {
+    						var textAreaFileContents = document.getElementById(
+    							"textAreaFileContents"
+    						);
+
+
+    						$scope.imgs.$add({
+    							base64: fileLoadedEvent.target.result
+    						});
+    					};
+
+    					fileReader.readAsDataURL(fileToLoad);
+    				}
+    				break;
+    			}
+    		}
+
+    		if (!blnValid) {
+    			alert('File is not valid');
+    			return false;
+    		}
+    	}
+
+    	return true;
+    }
+
+    $scope.deleteimg = function(imgid) {
+    	var r = confirm("Do you want to remove this image ?");
+    	if (r == true) {
+    		$scope.imgs.forEach(function(childSnapshot) {
+    			if (childSnapshot.$id == imgid) {
+    					$scope.imgs.$remove(childSnapshot).then(function(ref) {
+    						ref.key() === childSnapshot.$id; // true
+    					});
+    			}
+    		});
+    	}
+    }
+
+
+
+}]);
