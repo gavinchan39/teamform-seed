@@ -1,0 +1,174 @@
+<div class="navbar-wrapper" >
+  <header class="main-header" >
+    <!-- Logo -->
+    <a href="index.html" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>T</b>FM</span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b>Team</b>Form</span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+
+      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <li>
+            <div class="input-group" id="adv-search" ng-controller="search">
+              <div class = "menuOverlay">
+
+                <input type="text" ng-model="searchString" placeholder="Search" class = "form-control" />
+                <div ng-if = "searchString != ''">
+                  <ul ng-repeat="i in items | searchFor:searchString | limitTo:5 " ng-hide = "searchString == null" class = "search_list" >
+                    <a href = "{{i.link}}"  ><li class = "list-group-item">{{ i.name }}<br />{{i.type}}</li></a>
+                  </ul>
+                </div>
+              </div>
+              <div class="input-group-btn">
+                <div class="btn-group" role="group">
+                  <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                </div>
+
+              </div>
+
+            </div>
+          </li>
+          <!-- User Account: style can be found in dropdown.less -->
+          <li ng-if="!$root.login">
+            <a href="#" ng-click="signin()">Sign In</a>
+          </li>
+          <li ng-if="$root.login" class="dropdown user user-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <img class="user-image" alt="User Image" src="{{$root.user.photoURL}}">
+              <span class="hidden-xs" id="user_name">{{$root.user.displayName}}</span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+                <img src="{{$root.user.photoURL}}" class="img-circle" alt="User Image">
+                <p>
+                  {{$root.user.displayName}}
+                </p>
+              </li>
+              <!-- Menu Body -->
+              <li class="user-body">
+                <div class="row">
+                  <div class="col-xs-6 text-center">
+                    <a href="#">Followers</a>
+                  </div>
+                  <div class="col-xs-6 text-center">
+                    <a href="#">Friends</a>
+                  </div>
+                </div>
+              </li>
+
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                <div class="pull-left">
+                  <a href="#" class="btn btn-default btn-flat" ng-click="$root.page=profile">Profile</a>
+                </div>
+                <div class="pull-right">
+                  <a href="#" class="btn btn-default btn-flat" ng-click="signout()">Sign out</a>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+<!-- Left side column. contains the logo and sidebar -->
+<aside class="main-sidebar" ng-controller = "sidebar">
+  <!-- sidebar: style can be found in sidebar.less -->
+  <section class="sidebar">
+
+
+    <!-- /.search form -->
+    <!-- sidebar menu: : style can be found in sidebar.less -->
+    <ul class="sidebar-menu">
+      <li class="header">MAIN NAVIGATION</li>
+      <li class="treeview">
+        <a href="profile.html">
+          <i class="fa fa-user"></i>
+          <span>Profile</span>
+          <span class="pull-right-container">
+
+          </span>
+        </a>
+      </li>
+
+
+      <li class="treeview">
+        <a href="createEvent.html">
+          <i class="fa fa-files-o"></i>
+          <span>Create Events</span>
+          <span class="pull-right-container">
+            <span class="label label-primary pull-right">4</span>
+          </span>
+        </a>
+
+      </li>
+
+      <li class="treeview">
+        <a href="customTest.html">
+          <i class="fa fa-files-o"></i>
+          <span>Create Test</span>
+          <span class="pull-right-container">
+            <span class="label label-primary pull-right">4</span>
+          </span>
+        </a>
+
+      </li>
+
+      <li class="treeview">
+        <a href="#">
+          <i class="fa fa-share"></i> <span>My Teams & Events</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu" style="display: none;">
+          <li>
+            <a href="#"><i class="fa fa-circle-o"></i> Admin
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu" ng-repeat="a in admin">
+              <li><a href="{{a.link}}"><i class="fa fa-circle-o"></i> {{a.event}}</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#"><i class="fa fa-circle-o"></i> Leader
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu" ng-repeat="t in team">
+              <li><a href="{{t.link}}"><i class="fa fa-circle-o"></i>{{t.event}}-{{t.team}}</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#"><i class="fa fa-circle-o"></i> Member
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu" ng-repeat="m in member">
+              <li><a href="{{m.link}}"><i class="fa fa-circle-o"></i>{{m.event}}-{{m.team}}</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+
+
+  </section>
+  <!-- /.sidebar -->
+</aside>
+
+</div>

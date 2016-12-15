@@ -2,7 +2,9 @@ $(document).ready(function(){
 
 });
   var app = angular.module('login',['firebase']);
-	app.controller('LoginCtrl', ['$scope', '$firebaseObject', '$firebaseArray', function($scope, $firebaseObject, $firebaseArray) {
+  var id;
+
+	app.controller('LoginCtrl', ['$scope', '$firebaseObject', '$firebaseArray', function($scope, $firebaseObject, $firebaseArray, uid) {
 
 	// TODO: implementation of AdminCtrl
 
@@ -10,10 +12,11 @@ $(document).ready(function(){
 	$scope.param = {};
   $scope.login = false;
 	// Call Firebase initialization code defined in site.js
-  initializeFirebase();
-	var id;
+
+
   var provider = new firebase.auth.GoogleAuthProvider();
   firebase.auth().onAuthStateChanged(function(user) {
+
   if (user) {
     // User is signed in.
 
@@ -76,6 +79,7 @@ $(document).ready(function(){
 						.then( function(data) {
 						$scope[id].name = profile.displayName;
 						$scope[id].$save();
+            return id;
 						})
 						.catch(function(error) {
 							// Database connection error handling...
@@ -123,8 +127,6 @@ $(document).ready(function(){
 
 
 }]);
-
-
 
 
 

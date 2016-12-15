@@ -1,30 +1,69 @@
 <!DOCTYPE html>
-<html>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-<body>
+<html  ng-app="test">
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+ <!-- Theme style -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.8/css/AdminLTE.min.css">
+ <!-- AdminLTE Skins. Choose a skin from the css/skins
+      folder instead of downloading all of them to reduce the load. -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.8/css/skins/_all-skins.min.css">
+ <!-- iCheck -->
+ <link rel="stylesheet" href="plugins/iCheck/flat/blue.css">
+ <!-- Morris chart -->
+ <link rel="stylesheet" href="plugins/morris/morris.css">
+ <!-- jvectormap -->
+ <link rel="stylesheet" href="plugins/jvectormap/jquery-jvectormap-1.2.2.css">
+ <!-- Date Picker -->
+ <link rel="stylesheet" href="plugins/datepicker/datepicker3.css">
+ <!-- Daterange picker -->
+ <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
+ <!-- bootstrap wysihtml5 - text editor -->
+ <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
 
 
-  <div class="container"  ng-app="test" ng-controller="testCtrl">
+ <link rel="stylesheet" href="css/index.css">
+ <script src = "js/site.js"></script>
+
+
+</head>
+<body class="hold-transition skin-blue sidebar-mini" ng-controller="switch">
+
+
+<div ng-include = "'header.html'">
+
+</div>
+
+
+  <div class="content-wrapper"  ng-controller="testCtrl">
     <!--for observating the content in the json object to debug-->
-        <span>{{questionList}}</span>
 
 
 
+    <div class="form-group">
+      <div >
+
+
+            <label>Test Name</label>
+            <input type = "text"  ng-model = "testName" required />
+          </div>
+        </div>
 
     <!--generate the display list of the question tittle and the buttons to edit and delete-->
   <div ng-repeat="x in questionList" class="well">
-    <h3 class="col-xs-10 col-md-10" >{{questionList[$index].title}}</h3>
+
+    <h3 class="col-xs-10 col-md-10" >{{x.title}}</h3>
     <button ng-click="goBackup($index,0, $index)" type="button" class="btn btn-info btn-lg pull-right'" data-toggle="modal" data-target="#modalTemplate"><span class="glyphicon glyphicon-pencil" aria-hidden="false" aria-label="Edit"></span></button>
     <button ng-click="deleteQuestion($index,1)" class="btn btn-lg pull-right'" ><span class="glyphicon glyphicon-trash" aria-hidden="false" aria-label="Delete"></span></button>
   </div>
 
 <button ng-click="goBackup(NULL,1, -1)" data-toggle="modal" data-target="#modalTemplate"  class="btn btn-success pull-left'"  ><span class="glyphicon glyphicon-plus-sign" aria-hidden="false" aria-label="Add Question"></span></button>
 <button ng-click="deleteQuestion(0,questionList.length)" class="btn btn-danger pull-left'" ><span class="glyphicon glyphicon-trash" aria-hidden="false" aria-label="Delete All"></span></button>
-<button ng-click="submitTest()" class="btn btn-info pull-left'" ><span class="glyphicon glyphicon-floppy-disk" aria-hidden="false" aria-label="Delete All"></span></button>
+<button ng-click="submitTest()" class="btn btn-info pull-right'" ><span class="glyphicon glyphicon-floppy-disk" aria-hidden="false" aria-label="Delete All"></span></button>
 
 <!--another modal only for editing newly added question-->
 <div  class="modal fade" id="modalTemplate" role="dialog" >
@@ -37,15 +76,16 @@
 
           <div class="form-group">
             <div >
+
                 <labal>Question: </label>
-                  {{$scope.questionList}}
+
                   <input class=" form-control" type="text" ng-model="getBackup().title" required>
                 </div>
               </div>
 
               <div class="form-group">
                 <label>Choice: </label>
-                {{getBackup().choice}}
+
                 <button ng-click="addChoice()" class="btn btn-xs pull-right'" ><span class="glyphicon glyphicon-plus" aria-hidden="false" aria-label="Add Choice"></span></button>
                 <button ng-click="deleteChoice()" class="btn btn-xs pull-right'" ><span class="glyphicon glyphicon-minus" aria-hidden="false" aria-label="Delete Choice"></span></button>
 
@@ -55,27 +95,7 @@
                       <div class="col-sm-11">
                         <input class="col-xs-4 col-md-4 form-control" type="text" ng-model="x.text" required>
 
-                        <div>
-                        <div>
-                          <div class="container-fluid">
 
-                            <form ng-submit="uploadFile()">
-                              <input type="file" name="file" class="inputimg" id="nameImg" accept="image/*">
-                              <br />
-                              <span class="input-group-btn">
-                                      <button  type="submit" class="btn btn-block">Upload Image
-                                        <i class="material-icons">send</i>
-                                      </button>
-                                </span>
-                            </form>
-                            <hr />
-                            <div ng-repeat="img in imgs  | orderBy: '-date'" class="col-xs-12 col-sm-6 col-md-3">
-                              <img ng-src="{{img.base64}}">
-                              <a class="btn btn-danger btn-block" ng-click="deleteimg(img.$id)">Delete</a>
-                            </div>
-                          </div>
-                        </div>
-                             </div>
 
                       </div>
                     </div>
@@ -119,15 +139,37 @@
   <!-- Firebase (v3.0.3) and AngularFire (v2.0.0) (after angular library is loaded) -->
   <script src="https://www.gstatic.com/firebasejs/3.0.3/firebase.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angularFire/2.0.0/angularfire.min.js"></script>
-   <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-   <!-- Bootstrap 3.3.6 -->
-   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-   <script src="https://apis.google.com/js/platform.js" async defer></script>
-   <script src="js/login.js"></script>
-   <script src="js/search.js"></script>
-   <script src="js/customTest.js"></script>
-      <script src="js/site.js"></script>
-   <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+  <script src = "js/index.js"></script>
+  <script src="js/customTest.js"></script>
+
+  <!-- Bootstrap 3.3.6 -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <!-- Morris.js charts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+  <script src="plugins/morris/morris.min.js"></script>
+  <!-- Sparkline -->
+  <script src="plugins/sparkline/jquery.sparkline.min.js"></script>
+  <!-- jvectormap -->
+  <script src="plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+  <script src="plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+  <!-- jQuery Knob Chart -->
+  <script src="plugins/knob/jquery.knob.js"></script>
+  <!-- daterangepicker -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+  <script src="plugins/daterangepicker/daterangepicker.js"></script>
+  <!-- datepicker -->
+  <script src="plugins/datepicker/bootstrap-datepicker.js"></script>
+  <!-- Bootstrap WYSIHTML5 -->
+  <script src="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+  <!-- Slimscroll -->
+  <script src="plugins/slimScroll/jquery.slimscroll.min.js"></script>
+  <!-- FastClick -->
+  <script src="plugins/fastclick/fastclick.js"></script>
+  <!--AdminLTE-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.8/js/app.js"></script>
 
 
 

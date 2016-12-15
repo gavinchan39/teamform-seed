@@ -43,6 +43,15 @@
   width:20%;
 }
 
+ul a:hover .list-group-item  {
+  background: #B7DAF9;
+
+}
+
+.list-group-item{
+    color: #000000;
+}
+
 
 
 

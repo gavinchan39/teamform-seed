@@ -85,12 +85,7 @@ angular.module('teamform-admin-app', ['firebase'])
 		if (newVal >=1 && newVal >= $scope.param.minTeamSize ) {
 			$scope.param.maxTeamSize = newVal;
 		}
-
-
-
 		$scope.param.$save();
-
-
 	}
 
 	$scope.saveFunc = function() {
